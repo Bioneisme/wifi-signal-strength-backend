@@ -1,20 +1,13 @@
 import mongoose from "mongoose";
 import {Request} from "express";
+import {Users} from "./entities";
 
 export interface Todo {
     text: string;
     user: mongoose.Schema.Types.ObjectId;
 }
 
-export interface User extends mongoose.Document {
-    id: string;
-    username: string;
-    email: string;
-    password: string;
-    _doc?: User;
-}
-
-export type UserRequest = Request & { user: User | null };
+export type UserRequest = Request & {user: Users | undefined};
 
 export interface Session {
     id: number;
