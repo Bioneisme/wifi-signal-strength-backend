@@ -1,7 +1,8 @@
 import {verifyJWT} from "../helpers/jwt";
-import User from "../models/userModel";
 import logger from "../config/logger";
+import {DI} from "../index";
 import {Response, Request, NextFunction} from "express";
+import {Users} from "../entities";
 import {UserRequest} from "../types";
 
 
@@ -14,7 +15,11 @@ export default async function protectedRoute(req: Request, res: Response, next: 
 
             const decoded = verifyJWT(token);
 
-            (req as UserRequest).user = await User.findById((decoded as { id: string }).id);
+            const id: number = (decoded as { id: number }).id;
+
+            const user = await DI.em.findOne(Users, {id});
+            if (!user) return res.status(400).send("User not found");
+            (req as UserRequest).user = user;
 
             next();
         } catch (e) {

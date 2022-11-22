@@ -1,19 +1,30 @@
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import usersRoutes from "./routes/userRoute";
-import {MONGO_URI, SERVER_PORT} from "./config/settings";
+import {SERVER_PORT} from "./config/settings";
+import {config} from "./config/mikro-orm";
 import logger from "./config/logger";
 import express, {Application} from "express";
-import mongoose from "mongoose";
+import {EntityManager, MikroORM} from "@mikro-orm/core";
+import logging from "./middleware/loggingMiddleware";
 
 const app: Application = express();
 
+export const DI = {} as {
+    orm: MikroORM,
+    em: EntityManager
+};
+
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 
+app.use(logging);
 app.use("/api/users", usersRoutes);
 
 app.listen(SERVER_PORT, async () => {
-    await mongoose.connect(MONGO_URI, () => logger.info(`MongoDB Connected`));
+    DI.orm = await MikroORM.init(config);
+    DI.em = DI.orm.em.fork();
 
     logger.info(`Server Started on port ${SERVER_PORT}`);
 });
