@@ -12,6 +12,8 @@ app.use(cors());
 
 app.use("/api/users", usersRoutes);
 
-mongoose.connect(MONGO_URI, () => logger.info(`MongoDB Connected`));
+app.listen(SERVER_PORT, async () => {
+    await mongoose.connect(MONGO_URI, () => logger.info(`MongoDB Connected`));
 
-app.listen(SERVER_PORT, () => logger.info(`Server Started on port ${SERVER_PORT}`));
+    logger.info(`Server Started on port ${SERVER_PORT}`);
+});
