@@ -1,6 +1,6 @@
 import logger from "../config/logger";
 import {DI} from "../index";
-import {generateJWT} from "../helpers/jwt";
+import {generateJWT, verifyJWT} from "../helpers/jwt";
 import {Request, Response} from "express";
 import {UserRequest} from "../types";
 import bcryptjs from "bcryptjs";
@@ -89,4 +89,21 @@ async function getCurrentUser(req: Request, res: Response) {
     }
 }
 
-export {register, login, getCurrentUser};
+async function validate(req: Request, res: Response) {
+    try {
+        const {jwt} = req.body;
+        const decoded = verifyJWT(jwt);
+
+        const id: number = (decoded as { id: number }).id;
+
+        const user = await DI.em.findOne(Users, {id});
+        if (!user) return res.status(400).send("User not found");
+        (req as UserRequest).user = user;
+
+        return res.status(200).json({jwt, username: user.username});
+    } catch (e) {
+        logger.error(`getCurrentUser: ${e}`);
+    }
+}
+
+export {register, login, getCurrentUser, validate};
