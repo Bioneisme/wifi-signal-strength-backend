@@ -7,14 +7,14 @@ export class Users extends baseEntity {
     username!: string;
 
     @Property({type: "string"})
-    email!: string;
+    login!: string;
 
     @Property({type: "string"})
     password!: string;
 
-    constructor(email: string, password: string, username: string) {
+    constructor(login: string, password: string, username: string) {
         super();
-        this.email = email;
+        this.login = login;
         this.password = password;
         this.username = username;
     }

@@ -8,14 +8,14 @@ import {Users} from "../entities";
 
 async function register(req: Request, res: Response) {
     try {
-        const {username, email, password} = req.body;
+        const {username, login, password} = req.body;
 
-        if (!username || !password || !email) {
+        if (!username || !password || !login) {
             res.status(400).send("Missing username, email or password");
             return;
         }
 
-        const existingUser = await DI.em.findOne(Users, {email});
+        const existingUser = await DI.em.findOne(Users, {login});
 
         if (existingUser) {
             res.status(400).send("User already exists");
@@ -27,7 +27,7 @@ async function register(req: Request, res: Response) {
 
         const user = DI.em.create(Users, {
             username,
-            email,
+            login,
             password: hashedPassword
         });
 
@@ -46,14 +46,14 @@ async function register(req: Request, res: Response) {
 
 async function login(req: Request, res: Response) {
     try {
-        const {email, password} = req.body;
+        const {login, password} = req.body;
 
-        if (!email || !password) {
-            res.status(400).send("Missing email or password");
+        if (!login || !password) {
+            res.status(400).send("Missing login or password");
             return;
         }
 
-        const user = await DI.em.findOne(Users, {email});
+        const user = await DI.em.findOne(Users, {login});
 
         if (!user) {
             res.status(400).send("User does not exist");
