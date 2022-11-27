@@ -67,7 +67,7 @@ async function login(req: Request, res: Response) {
             return;
         }
 
-        res.status(201).send({...(user), token: generateJWT(user.id)});
+        res.status(200).send({...(user), token: generateJWT(user.id)});
     } catch (e) {
         logger.error(`Login: ${e}`);
     }
