@@ -33,4 +33,23 @@ async function postWifi(req: Request, res: Response) {
     }
 }
 
-export {postWifi};
+async function getUserWifi(req: Request, res: Response) {
+    try {
+        const {id} = req.params;
+        if (!id) {
+            res.status(400).send("ID not found");
+            return;
+        }
+        const user = await DI.em.findOne(Users, {id: +id});
+        if (!user) {
+            res.status(400).send("User not found");
+            return;
+        }
+        const wiFis = await DI.em.find(Wifi, {user});
+        res.send(wiFis);
+    } catch (e) {
+        logger.error(`getUserWifi: ${e}`);
+    }
+}
+
+export {postWifi, getUserWifi};
