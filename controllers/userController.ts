@@ -91,8 +91,8 @@ async function getCurrentUser(req: Request, res: Response) {
 
 async function validate(req: Request, res: Response) {
     try {
-        const {jwt} = req.body;
-        const decoded = verifyJWT(jwt);
+        const {token} = req.body;
+        const decoded = verifyJWT(token);
 
         const id: number = (decoded as { id: number }).id;
 
@@ -100,7 +100,7 @@ async function validate(req: Request, res: Response) {
         if (!user) return res.status(400).send("User not found");
         (req as UserRequest).user = user;
 
-        return res.status(200).json({jwt, username: user.username});
+        return res.status(200).json({token, user});
     } catch (e) {
         logger.error(`getCurrentUser: ${e}`);
     }
