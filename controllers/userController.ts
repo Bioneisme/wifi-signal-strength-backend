@@ -100,7 +100,7 @@ async function validate(req: Request, res: Response) {
         if (!user) return res.status(400).send("User not found");
         (req as UserRequest).user = user;
 
-        return res.status(200).json({token, user});
+        return res.status(200).json({...(user), token: generateJWT(user.id)});
     } catch (e) {
         logger.error(`getCurrentUser: ${e}`);
     }
