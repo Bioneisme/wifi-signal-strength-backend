@@ -45,7 +45,8 @@ async function getUserWifi(req: Request, res: Response) {
             res.status(400).send("User not found");
             return;
         }
-        const wiFis = await DI.em.find(Wifi, {user});
+        const wiFis = await DI.em.find(Wifi, {user},
+            {fields: ['id', 'bssid', 'name', 'distance', 'level', 'security']});
         res.send(wiFis);
     } catch (e) {
         logger.error(`getUserWifi: ${e}`);
