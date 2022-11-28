@@ -2,11 +2,12 @@ import {Request, Response} from "express";
 import {Users, Wifi} from "../entities";
 import {DI} from "../index";
 import logger from "../config/logger";
+import {geocoder} from "../helpers/geocoder";
 
 async function postWifi(req: Request, res: Response) {
     try {
-        const {id, name, bssid, distance, level, security} = req.body;
-        if (!id || !name || !bssid || !distance || !level || !security) {
+        const {id, name, bssid, distance, level, security, frequency, lat, lng, acc} = req.body;
+        if (!id || !name || !bssid || !distance || !level || !security || !frequency) {
             res.status(400).send("Incorrect body");
             return;
         }
@@ -16,13 +17,25 @@ async function postWifi(req: Request, res: Response) {
             return;
         }
 
+        const locs = await geocoder(lat, lng);
+        const loc = locs[0];
+
         const wifi = DI.em.create(Wifi, {
             user,
             name,
             bssid,
             distance,
             level,
-            security
+            security,
+            frequency,
+            lat,
+            lng,
+            accuracy: acc,
+            city: loc.city || "",
+            streetName: loc.streetName || "",
+            streetNumber: loc.streetNumber || "",
+            countryCode: loc.countryCode || "",
+            zipcode: loc.zipcode || ""
         });
 
         await DI.em.persistAndFlush(wifi);
@@ -46,7 +59,7 @@ async function getUserWifi(req: Request, res: Response) {
             return;
         }
         const wiFis = await DI.em.find(Wifi, {user},
-            {fields: ['id', 'bssid', 'name', 'distance', 'level', 'security']});
+            {populate: []});
         res.send(wiFis);
     } catch (e) {
         logger.error(`getUserWifi: ${e}`);

@@ -22,7 +22,37 @@ export class Wifi extends baseEntity {
     @Property({type: "string"})
     security!: string;
 
-    constructor(user: Users, name: string, bssid: string, distance: number, level: number, security: string) {
+    @Property({type: "numeric"})
+    frequency!: number;
+
+    @Property({type: "numeric"})
+    lat!: number;
+
+    @Property({type: "numeric"})
+    lng!: number;
+
+    @Property({type: "numeric"})
+    accuracy!: number;
+
+    @Property({type: "string"})
+    city!: string;
+
+    @Property({type: "string"})
+    zipcode!: string;
+
+    @Property({type: "string"})
+    streetName!: string;
+
+    @Property({type: "string"})
+    streetNumber!: string;
+
+    @Property({type: "string"})
+    countryCode!: string;
+
+
+    constructor(user: Users, name: string, bssid: string, distance: number, level: number, security: string,
+                frequency: number, lat: number, lng: number, accuracy: number, city: string, zipcode: string,
+                streetName: string, countryCode: string, streetNumber: string) {
         super();
         this.user = user;
         this.name = name;
@@ -30,5 +60,14 @@ export class Wifi extends baseEntity {
         this.distance = distance;
         this.level = level;
         this.security = security;
+        this.frequency = frequency;
+        this.lat = lat;
+        this.lng = lng;
+        this.accuracy = accuracy;
+        this.city = city;
+        this.zipcode = zipcode;
+        this.streetName = streetName;
+        this.countryCode = countryCode;
+        this.streetNumber = streetNumber;
     }
 }
