@@ -3,6 +3,7 @@ import {Users, Wifi} from "../entities";
 import {DI} from "../index";
 import logger from "../config/logger";
 import {geocoder} from "../helpers/geocoder";
+import {QueryOrder} from "@mikro-orm/core";
 
 async function postWifi(req: Request, res: Response) {
     try {
@@ -58,8 +59,9 @@ async function getUserWifi(req: Request, res: Response) {
             res.status(400).send("User not found");
             return;
         }
-        const wiFis = await DI.em.find(Wifi, {user},
-            {populate: []});
+        const wiFis = await DI.em.find(Wifi, {user}, {
+            orderBy: {created_at: QueryOrder.DESC}, populate: [], limit: 20
+        });
         res.send(wiFis);
     } catch (e) {
         logger.error(`getUserWifi: ${e}`);
