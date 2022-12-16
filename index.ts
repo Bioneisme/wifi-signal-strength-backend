@@ -2,7 +2,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import usersRoutes from "./routes/userRoute";
 import wifiRoute from "./routes/wifiRoute";
-import {SERVER_PORT} from "./config/settings";
+import {CLIENT_URL, SERVER_PORT} from "./config/settings";
 import {config} from "./config/mikro-orm";
 import logger from "./config/logger";
 import express, {Application} from "express";
@@ -18,7 +18,8 @@ export const DI = {} as {
 
 app.use(express.json());
 app.use(cors({
-    credentials: true
+    credentials: true,
+    origin: CLIENT_URL
 }));
 app.use(cookieParser());
 
