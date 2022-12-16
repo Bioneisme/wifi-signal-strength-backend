@@ -68,4 +68,44 @@ async function getUserWifi(req: Request, res: Response) {
     }
 }
 
-export {postWifi, getUserWifi};
+async function getWifi(req: Request, res: Response) {
+    try {
+        const {id} = req.params;
+        const wifi = await DI.em.findOne(Wifi, {id: +id});
+        if (!wifi)
+            return res.status(400).send("WiFi not found");
+
+        res.send(wifi);
+    } catch (e) {
+        logger.error(`getWifi: ${e}`);
+    }
+}
+
+async function deleteWifi(req: Request, res: Response) {
+    try {
+        const {id} = req.params;
+        const wifi = await DI.em.findOne(Wifi, {id: +id});
+        if (!wifi)
+            return res.status(400).send("WiFi not found");
+
+        await DI.em.removeAndFlush(wifi);
+
+        res.send('OK');
+    } catch (e) {
+        logger.error(`getWifi: ${e}`);
+    }
+}
+
+async function getWifis(req: Request, res: Response) {
+    try {
+        const wifis = await DI.em.find(Wifi, {});
+        if (!wifis)
+            return res.status(400).send("WiFis not found");
+
+        res.send(wifis);
+    } catch (e) {
+        logger.error(`getWifis: ${e}`);
+    }
+}
+
+export {postWifi, getUserWifi, getWifi, getWifis, deleteWifi};

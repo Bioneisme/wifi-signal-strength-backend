@@ -5,6 +5,7 @@ import {Request, Response} from "express";
 import {UserRequest} from "../types";
 import bcryptjs from "bcryptjs";
 import {Users} from "../entities";
+import {wrap} from "@mikro-orm/core";
 
 async function register(req: Request, res: Response) {
     try {
@@ -106,4 +107,68 @@ async function validate(req: Request, res: Response) {
     }
 }
 
-export {register, login, getCurrentUser, validate};
+async function deleteUser(req: Request, res: Response) {
+    try {
+        const {id} = req.params;
+        const user = await DI.em.findOne(Users, {id: +id});
+        if (!user) return res.status(400).send("User not found");
+
+        await DI.em.removeAndFlush(user);
+
+        return res.status(200).json('OK');
+    } catch (e) {
+        logger.error(`deleteUser: ${e}`);
+    }
+}
+
+async function editUser(req: Request, res: Response) {
+    try {
+        const {id, username, login, password} = req.body;
+        if (!id || !username || !login || !password) {
+            res.status(400).send("Missing some fields");
+            return;
+        }
+
+        const user = await DI.em.findOne(Users, {id});
+        if (!user) return res.status(400).send("User not found");
+        const slat = bcryptjs.genSaltSync(10);
+        const hashedPassword = await bcryptjs.hash(password, slat);
+
+        wrap(user).assign({
+            username,
+            login,
+            password: hashedPassword
+        });
+
+        await DI.em.persistAndFlush(user);
+
+        return res.status(200).json({user});
+    } catch (e) {
+        logger.error(`editUser: ${e}`);
+    }
+}
+
+async function getUser(req: Request, res: Response) {
+    try {
+        const {id} = req.params;
+        const user = await DI.em.findOne(Users, {id: +id});
+        if (!user) return res.status(400).send("User not found");
+
+        return res.status(200).json({user});
+    } catch (e) {
+        logger.error(`getUser: ${e}`);
+    }
+}
+
+async function getUsers(req: Request, res: Response) {
+    try {
+        const users = await DI.em.find(Users, {});
+        if (!users) return res.status(400).send("Users not found");
+
+        return res.status(200).json({users});
+    } catch (e) {
+        logger.error(`getUsers: ${e}`);
+    }
+}
+
+export {register, login, getCurrentUser, validate, deleteUser, editUser, getUser, getUsers};
