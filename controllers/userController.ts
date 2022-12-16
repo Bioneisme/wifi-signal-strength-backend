@@ -4,8 +4,8 @@ import {generateJWT, verifyJWT} from "../helpers/jwt";
 import {Request, Response} from "express";
 import {UserRequest} from "../types";
 import bcryptjs from "bcryptjs";
-import {Users} from "../entities";
-import {wrap} from "@mikro-orm/core";
+import {Users, Wifi} from "../entities";
+import {QueryOrder, wrap} from "@mikro-orm/core";
 
 async function register(req: Request, res: Response) {
     try {
@@ -171,4 +171,38 @@ async function getUsers(req: Request, res: Response) {
     }
 }
 
-export {register, login, getCurrentUser, validate, deleteUser, editUser, getUser, getUsers};
+async function getUserLastLocation(req: Request, res: Response) {
+    try {
+        const {id} = req.params;
+        const user = await DI.em.findOne(Users, {id: +id});
+        if (!user) return res.status(400).send("User not found");
+        const lastScannedWifi = await DI.em.findOne(Wifi, {user}, {orderBy: {created_at: QueryOrder.DESC}});
+        if (!lastScannedWifi) return res.send({lat: 0, lng: 0, accuracy: 0});
+
+        return res.send({lat: lastScannedWifi.lat, lng: lastScannedWifi.lng, accuracy: lastScannedWifi.accuracy});
+    } catch (e) {
+        logger.error(`getUserLastLocation: ${e}`);
+    }
+}
+
+async function getUsersLastLocation(req: Request, res: Response) {
+    try {
+        const users = await DI.em.find(Users, {});
+        if (!users) return res.status(400).send("Users not found");
+        let coords = [];
+        for (const user of users) {
+            const lastScannedWifi = await DI.em.findOne(Wifi, {user}, {orderBy: {created_at: QueryOrder.DESC}});
+            if (!lastScannedWifi) {
+                coords.push({id: user.id, lat: 0, lng: 0, accuracy: 0});
+            } else {
+                coords.push({id: user.id, lat: lastScannedWifi.lat, lng: lastScannedWifi.lng, accuracy: lastScannedWifi.accuracy});
+            }
+        }
+
+        return res.send(coords);
+    } catch (e) {
+        logger.error(`getUsersLastLocation: ${e}`);
+    }
+}
+
+export {register, login, getCurrentUser, validate, deleteUser, editUser, getUser, getUsers, getUserLastLocation, getUsersLastLocation};

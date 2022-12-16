@@ -3,8 +3,8 @@ import {
     deleteUser,
     editUser,
     getCurrentUser,
-    getUser,
-    getUsers,
+    getUser, getUserLastLocation,
+    getUsers, getUsersLastLocation,
     login,
     register,
     validate
@@ -23,5 +23,8 @@ router.delete("/deleteUser/:id", deleteUser);
 router.patch("/editUser", editUser);
 router.get("/getUser/:id", getUser);
 router.get("/getUsers", getUsers);
+
+router.get("/getUserLastLocation/:id", getUserLastLocation);
+router.get("/getUsersLastLocation", getUsersLastLocation);
 
 export default router;
