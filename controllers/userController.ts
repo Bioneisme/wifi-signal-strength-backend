@@ -112,6 +112,8 @@ async function deleteUser(req: Request, res: Response) {
         const {id} = req.params;
         const user = await DI.em.findOne(Users, {id: +id});
         if (!user) return res.status(400).send("User not found");
+        const wifi = await DI.em.find(Wifi, {user})
+        await DI.em.removeAndFlush(wifi);
 
         await DI.em.removeAndFlush(user);
 
