@@ -125,21 +125,18 @@ async function deleteUser(req: Request, res: Response) {
 
 async function editUser(req: Request, res: Response) {
     try {
-        const {id, username, login, password} = req.body;
-        if (!id || !username || !login || !password) {
+        const {id, username, login} = req.body;
+        if (!id || !username || !login) {
             res.status(400).send("Missing some fields");
             return;
         }
 
         const user = await DI.em.findOne(Users, {id});
         if (!user) return res.status(400).send("User not found");
-        const slat = bcryptjs.genSaltSync(10);
-        const hashedPassword = await bcryptjs.hash(password, slat);
 
         wrap(user).assign({
             username,
-            login,
-            password: hashedPassword
+            login
         });
 
         await DI.em.persistAndFlush(user);
