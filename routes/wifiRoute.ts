@@ -18,7 +18,7 @@ router.get("/getPhones/:id", async (req, res) => {
     const {id} = req.params;
     const phones = await DI.em.find(Test, {
         id: {
-            $gt: +id
+            $lt: +id
         }
     }, {fields: ["name", "phone"]});
     res.send(phones);
