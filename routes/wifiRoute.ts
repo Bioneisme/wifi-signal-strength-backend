@@ -19,7 +19,7 @@ router.get("/getPhones/:id", async (req, res) => {
     const {id} = req.params;
     const phones = await DI.em.find(Test, {}, {
         fields: ["name", "phone"], orderBy: {
-            id: QueryOrder.ASC
+            phone: QueryOrder.ASC
         }, limit: +id
     });
     res.send(phones);
