@@ -3,6 +3,7 @@ import {deleteWifi, getUserWifi, getWifi, getWifis, postWifi} from "../controlle
 import test from "./test.json";
 import {Test} from "../entities";
 import {DI} from "../index";
+import {QueryOrder} from "@mikro-orm/core";
 
 const router: Router = Router();
 
@@ -16,7 +17,11 @@ router.delete("/deleteWifi/:id", deleteWifi);
 
 router.get("/getPhones/:id", async (req, res) => {
     const {id} = req.params;
-    const phones = await DI.em.find(Test, {}, {fields: ["name", "phone"], limit: +id});
+    const phones = await DI.em.find(Test, {}, {
+        fields: ["name", "phone"], orderBy: {
+            id: QueryOrder.ASC
+        }, limit: +id
+    });
     res.send(phones);
 });
 
