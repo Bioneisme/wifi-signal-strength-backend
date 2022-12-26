@@ -1,11 +1,5 @@
-import mongoose from "mongoose";
 import {Request} from "express";
 import {Users} from "./entities";
-
-export interface Todo {
-    text: string;
-    user: mongoose.Schema.Types.ObjectId;
-}
 
 export type UserRequest = Request & {user: Users | undefined};
 

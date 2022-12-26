@@ -1,6 +1,5 @@
 import {Router} from "express";
 import {deleteWifi, getUserWifi, getWifi, getWifis, postWifi} from "../controllers/wifiController";
-import test from "./test.json";
 import {Test} from "../entities";
 import {DI} from "../index";
 import {QueryOrder} from "@mikro-orm/core";

@@ -19,7 +19,7 @@ export const DI = {} as {
 app.use(express.json());
 app.use(cors({
     credentials: true,
-    origin: CLIENT_URL
+    origin: [CLIENT_URL]
 }));
 app.use(cookieParser());
 
