@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS public.wifi
     distance float NOT NULL,
     level integer NOT NULL,
     security character varying(255) NOT NULL,
-    frequency integer NOT NULL,
+    frequency float NOT NULL,
     lat float NOT NULL,
     lng float NOT NULL,
     accuracy float NOT NULL,
@@ -23,4 +23,14 @@ CREATE TABLE IF NOT EXISTS public.wifi
     ON UPDATE NO ACTION
     ON DELETE NO ACTION
     NOT VALID
+);
+
+CREATE TABLE IF NOT EXISTS public.users
+(
+    id SERIAL NOT NULL PRIMARY KEY,
+    username character varying(100) NOT NULL,
+    email character varying(100) NOT NULL,
+    password character varying(255) NOT NULL,
+    created_at character varying(50) NOT NULL,
+    updated_at character varying(50) NOT NULL,
 );
