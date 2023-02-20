@@ -1,8 +1,5 @@
 # WiFi Signal Strength BackEnd
 
-*Android: https://github.com/Bioneisme/wifi-signal-strength-android*
-*FrontEnd: https://github.com/zaurbbb?tab=repositories*
-
 - [Navigation](#navigation)
     - [Features](#features)
     - [Installation](#prerequisites)
@@ -37,3 +34,8 @@ Create an .env file locally. You can duplicate .env.example and name the new cop
 # After setting up .env start app
 npm run start
 ```
+
+
+*Android: https://github.com/Bioneisme/wifi-signal-strength-android*
+
+*FrontEnd: https://github.com/zaurbbb?tab=repositories*
